@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>НАЛОГ ЗА УПЛАТУ QR</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="qrcode.min.js"></script>
+    <style>
+
+    h2 {
+        font-size: 4mm;
+    }
+
+    label {
+        font-size: 3mm;
+        display: block;
+    }
+
+    p {
+        font-size: 3mm;
+        margin: 1mm;
+        margin-bottom: 0.2mm;
+    }
+
+    .thirdA4centered {
+        width: 210mm;
+        height: 99mm; 
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    .inputbox {
+        width: 95%;
+        height: 13mm;
+        border-color: black;
+        border-width: 2px;
+        border-style: solid;
+    }
+
+    .placedate {
+        width: 60%;
+        height: 3mm;
+        border: 0;
+        outline: 0;
+        border-bottom: 1px solid black;
+        margin: 0;
+        float: right;
+    }
+
+    .container {
+        height: 85mm;
+    }
+
+    .halfpage {
+        width: 50%;
+        height: 100%;
+        float: left;
+    }
+
+    .footer .header {
+        width: 100%;
+    }
+
+    .blank {
+        height: 6mm;
+        float: none;
+        display: table;
+        clear: both;
+    }
+
+    .blank3 {
+        height: 3mm;
+    }
+
+    .underline {
+        margin: 3mm 0 0 0;
+        align: left;
+        width: 50mm;
+    }
+
+    .underscript {
+        margin-top: 0;
+    }
+
+    .mali {
+        height: 8mm;
+        width: 8mm;
+    }
+
+    .iznos {
+        width: 66mm;
+    }
+
+    .ltr {
+        float: left;
+        margin-left: 6mm;
+    }
+
+    .iznosbox {
+        width: 100%;
+    }
+
+    .racun {
+        margin-left: 6mm;
+        width: 98mm;
+    }
+    
+    .right {
+        text-align: right;
+    }
+
+    .qrcode {
+        width: 45mm;
+        height: 45mm;
+        position: absolute;
+        left: 167mm;
+        top: 60mm;
+    }
+    </style>
+</head>
+<body>
+    <div class="thirdA4centered">
+        <div class="container">
+            <div class="header"><h2 align=right>НАЛОГ ЗА УПЛАТУ</p></div>
+            <div class="halfpage">
+                <label for="ime">платилац</label>
+                <textarea id="ime" class="inputbox"></textarea>
+                <label for="svrha">сврха уплате</label>
+                <textarea id="svrha" class="inputbox"></textarea>
+                <label for="primalac">прималац</label>
+                <textarea id="primalac" class="inputbox"></textarea>
+                <div class="blank"></div>
+                <hr class="underline">
+                <p class="underscript">печат и потпис платиоца</p>
+                <input id="mestodatum" class="placedate right" style="width:60%;" /><br>
+                <p align=right  class="underscript">место и датум пријема</p>
+            </div>
+
+            <div class="halfpage" style="">
+                <div class="ltr">
+                    <label for="sifra">шиф.</label>
+                    <input id="sifra" class="inputbox mali kratki" />
+                </div>
+                <div class="ltr">
+                    <label for="valuta">валута</label>
+                    <input id="valuta" class="inputbox mali" />
+                </div>
+                <div class="ltr iznos">
+                    <label for="iznos">износ</label>
+                    <input id="iznos" class="inputbox mali iznosbox right" />
+                </div>
+                <div class="blank blank3"></div>
+                <div class="racun">
+                    <label for="racun">рачун примаоца</label>
+                    <input id="racun" class="inputbox mali iznosbox" />
+                </div>
+                <div class="blank blank3"></div>
+                <div>
+                    <div class="ltr">
+                        <label for="model">модел</label>
+                        <input id="model" class="inputbox mali" />
+                    </div>
+                    <div class="ltr">
+                        <label for="poznabr"> и позив на број (одобрење)</label>
+                        <input id="poznabr" class="inputbox mali iznosbox" 
+                        style="width:81.6mm;" />
+                    </div>
+                </div>
+                <div class="blank" style="height: 23mm;"></div>
+                <div style="margin-left:5mm;">
+                    <hr class="underline">
+                    <p class="underscript">датум извршења</p>
+                </div>
+            </div>
+        </div>
+        <div id="qrcode" class="qrcode"></div>
+        <div class="footer"><center><p>Образац бр. 1<p></center></div>
+    </div>
+
+    <script type="text/javascript">
+        var qrcode = new QRCode(document.getElementById("qrcode"),
+            {
+                width: 160,
+                height: 160,
+                colorDark: "#555555"
+            });
+
+        function makeCode () {
+            var fields = [];
+            var t = document.getElementsByTagName("textarea");
+
+            for (var i=0; i<t.length; i++)
+                fields.push(t[i].value);
+
+            var t = document.getElementsByTagName("input");
+
+            for (var i=0; i<t.length; i++)
+                fields.push(t[i].value);
+
+            console.log(fields.join('\t'));
+
+            qrcode.makeCode(fields.join('\t'));
+        }
+
+        makeCode();
+
+        $("textarea").
+            on("blur", function () {
+            makeCode();
+        }).
+        on("keydown", function (e) {
+            if (e.keyCode == 13) {
+                makeCode();
+            }
+        });
+        
+        
+        $("input").
+            on("blur", function () {
+            makeCode();
+        }).
+        on("keydown", function (e) {
+            if (e.keyCode == 13) {
+                makeCode();
+            }
+        });
+    </script>
+</body>
