@@ -115,11 +115,19 @@
     }
 
     .qrcode {
-        width: 45mm;
-        height: 45mm;
+        width: 40mm;
+        height: 40mm;
         position: absolute;
         left: 167mm;
         top: 60mm;
+    }
+    .qrcode_label {
+        width: 40mm;
+        height: 7mm;
+        position: absolute;
+        left: 167mm;
+        top: 103mm;
+        font-size: 3mm;
     }
     </style>
 </head>
@@ -148,7 +156,7 @@
                 </div>
                 <div class="ltr">
                     <label for="valuta">валута</label>
-                    <input id="valuta" class="inputbox mali" />
+                    <input id="valuta" class="inputbox mali" value="RSD" />
                 </div>
                 <div class="ltr iznos">
                     <label for="iznos">износ</label>
@@ -178,11 +186,18 @@
                 </div>
             </div>
         </div>
-        <div id="qrcode" class="qrcode"></div>
+        <div>
+            <div id="qrcode" class="qrcode"></div>
+            <div class="qrcode_label">NBS IPS QR</div>
+        </div>
         <div class="footer"><center><p>Образац бр. 1<p></center></div>
     </div>
 
     <script type="text/javascript">
+        function nonNumDashDeleter(selector) {
+           
+        }
+
         var qrcode = new QRCode(document.getElementById("qrcode"),
             {
                 width: 160,
@@ -191,20 +206,19 @@
             });
 
         function makeCode () {
-            var fields = [];
-            var t = document.getElementsByTagName("textarea");
+            nonNumDashDeleter("#racun");
+            nonNumDashDeleter("#poznabr");
+            
 
-            for (var i=0; i<t.length; i++)
-                fields.push(t[i].value);
+            var result = "K:PR|V:01|C:1|R:".concat($("#racun").val()
+                , "|N:", $("#primalac").val()
+                , "|I:RSD", $("#iznos").val()
+                , "|SF:", $("#sifra").val()
+                , "|P:", $("#ime").val()
+                , "|S:", $("#svrha").val()
+                , "|RO:", $("#model").val().concat($("#poznabr").val()));
 
-            var t = document.getElementsByTagName("input");
-
-            for (var i=0; i<t.length; i++)
-                fields.push(t[i].value);
-
-            console.log(fields.join('\t'));
-
-            qrcode.makeCode(fields.join('\t'));
+            qrcode.makeCode(result);
         }
 
         makeCode();
