@@ -1,3 +1,5 @@
+<!-- vim: ts=4:tw=4 
+-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -194,20 +196,39 @@
     </div>
 
     <script type="text/javascript">
-        function nonNumDashDeleter(selector) {
-           
+        function validate_mod97(number) {
+            return number % 97n == 1n
+        }
+
+        function addzeros(brojracuna) {
+           let rest = brojracuna.slice(3);
+           let bank = brojracuna.slice(0,3);
+           return bank + "0".repeat(Math.max(15-rest.length, 0)) + rest;
         }
 
         var qrcode = new QRCode(document.getElementById("qrcode"),
-            {
+           {
                 width: 160,
                 height: 160,
                 colorDark: "#555555"
-            });
+           });
 
         function makeCode () {
-            nonNumDashDeleter("#racun");
-            nonNumDashDeleter("#poznabr");
+            if ($("#racun").val() != "") {
+                if (!validate_mod97(BigInt(addzeros($("#racun").val()))))
+                    $("#racun").css("background-color", "seashell");
+                else
+                    $("#racun").css("background-color", "white");
+            }
+
+            if ($("#model").val() == "97") {
+                let nr = $("#poznabr").val();
+                let check = nr.slice(2) + nr.slice(0,2);
+                if (!validate_mod97(BigInt(check)))
+                    $("#poznabr").css("background-color", "seashell");
+                else
+                    $("#poznabr").css("background-color", "white");
+            }
             
 
             var result = "K:PR|V:01|C:1|R:".concat($("#racun").val()
